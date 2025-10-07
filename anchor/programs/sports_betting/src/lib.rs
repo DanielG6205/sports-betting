@@ -1,4 +1,6 @@
 #![allow(clippy::result_large_err)]
+#![allow(unexpected_cfgs)]
+
 
 use anchor_lang::prelude::*;
 use anchor_lang::system_program;
@@ -19,7 +21,7 @@ pub mod sports_betting {
         let sb = &mut ctx.accounts.sports_betting;
     
         sb.bump = ctx.bumps.sports_betting;
-        sb.pot_bump = *ctx.bumps.get("pot_account").unwrap();
+        sb.pot_bump = ctx.bumps.pot_account;
         sb.team_a_name = team_a;
         sb.team_b_name = team_b;
         sb.game_start = start;
@@ -101,10 +103,11 @@ pub mod sports_betting {
         let pot_account_info = ctx.accounts.pot_account.to_account_info();
         let bettor_info = ctx.accounts.bettor.to_account_info();
         let system_program = ctx.accounts.system_program.to_account_info();
-
+        
+        let sb_key = sb.key();
         let seeds = &[
             b"pot",
-            sb.key().as_ref(),
+            sb_key.as_ref(),
             &[sb.pot_bump],
         ];
         let signer_seeds = &[&seeds[..]];
@@ -186,6 +189,8 @@ pub struct InitializeConfig<'info>{
     )]
     pub sports_betting: Account<'info, SportsBetting>,
 
+    /// CHECK: This is a system account PDA used to store SOL in the betting pot.
+    /// It is initialized by this instruction and only accessed via program-derived addresses.
     #[account( 
         init, 
         payer = payer, 
@@ -198,13 +203,13 @@ pub struct InitializeConfig<'info>{
     pub system_program: Program<'info, System>, 
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, InitSpace)]
+#[derive(AnchorSerialize, AnchorDeserialize, InitSpace, Clone)]
 pub struct Winners {
     pub wallet: Pubkey,
     pub amount: u64,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, InitSpace)]
+#[derive(AnchorSerialize, AnchorDeserialize, InitSpace, Clone)]
 pub struct Bettor {
     pub wallet: Pubkey,
     pub amount: u64,

@@ -1,0 +1,410 @@
+{
+  "address": "Count3AcZucFDPSFBAeHkQ6AvttieKUkyJ8HiQGhQwe",
+  "metadata": {
+    "name": "sports_betting",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "claim_rewards",
+      "discriminator": [
+        4,
+        144,
+        132,
+        71,
+        116,
+        23,
+        151,
+        80
+      ],
+      "accounts": [
+        {
+          "name": "bettor",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sports_betting",
+          "writable": true
+        },
+        {
+          "name": "pot_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sports_betting"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "end_game",
+      "discriminator": [
+        224,
+        135,
+        245,
+        99,
+        67,
+        175,
+        121,
+        252
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sports_betting",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "winning_team",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "initialize_config",
+      "discriminator": [
+        208,
+        127,
+        21,
+        1,
+        194,
+        190,
+        196,
+        70
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sports_betting",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  112,
+                  111,
+                  114,
+                  116,
+                  115,
+                  95,
+                  98,
+                  101,
+                  116,
+                  116,
+                  105,
+                  110,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "pot_account",
+          "docs": [
+            "It is initialized by this instruction and only accessed via program-derived addresses."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sports_betting"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "team_a",
+          "type": "string"
+        },
+        {
+          "name": "team_b",
+          "type": "string"
+        },
+        {
+          "name": "start",
+          "type": "u64"
+        },
+        {
+          "name": "end",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "place_bet",
+      "discriminator": [
+        222,
+        62,
+        67,
+        220,
+        63,
+        166,
+        126,
+        33
+      ],
+      "accounts": [
+        {
+          "name": "bettor",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sports_betting",
+          "writable": true
+        },
+        {
+          "name": "pot_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sports_betting"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "team",
+          "type": "u8"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "SportsBetting",
+      "discriminator": [
+        165,
+        5,
+        221,
+        10,
+        131,
+        129,
+        10,
+        245
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "BettingClosed",
+      "msg": "Betting is closed"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidTeam",
+      "msg": "Invalid team ID"
+    },
+    {
+      "code": 6002,
+      "name": "MaxBettorsReached",
+      "msg": "Max bettors reached"
+    },
+    {
+      "code": 6003,
+      "name": "InsufficientPot",
+      "msg": "Insufficient pot"
+    },
+    {
+      "code": 6004,
+      "name": "GameSettled",
+      "msg": "Game already settled"
+    },
+    {
+      "code": 6005,
+      "name": "NothingToClaim",
+      "msg": "You have nothing to claim"
+    },
+    {
+      "code": 6006,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    },
+    {
+      "code": 6007,
+      "name": "GameNotEnded",
+      "msg": "Game has not ended yet"
+    },
+    {
+      "code": 6008,
+      "name": "Overflow",
+      "msg": "Overflow error"
+    }
+  ],
+  "types": [
+    {
+      "name": "Bettor",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "team",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SportsBetting",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "pot_bump",
+            "type": "u8"
+          },
+          {
+            "name": "team_a_name",
+            "type": "string"
+          },
+          {
+            "name": "team_b_name",
+            "type": "string"
+          },
+          {
+            "name": "winners",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "Winners"
+                }
+              }
+            }
+          },
+          {
+            "name": "bettors",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "Bettor"
+                }
+              }
+            }
+          },
+          {
+            "name": "game_start",
+            "type": "u64"
+          },
+          {
+            "name": "game_end",
+            "type": "u64"
+          },
+          {
+            "name": "status",
+            "type": "u8"
+          },
+          {
+            "name": "winning_team",
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "pot",
+            "type": "u64"
+          },
+          {
+            "name": "admin",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Winners",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}
