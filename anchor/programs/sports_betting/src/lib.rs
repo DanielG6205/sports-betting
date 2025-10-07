@@ -1,7 +1,7 @@
 #![allow(clippy::result_large_err)]
 
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::system_program;
+use anchor_lang::system_program;
 
 declare_id!("Count3AcZucFDPSFBAeHkQ6AvttieKUkyJ8HiQGhQwe");
 
@@ -76,6 +76,8 @@ pub mod sports_betting {
 
         sb.status = 2;
         sb.winning_team = Some(winning_team);
+
+        Ok(())
     }
 
     pub fn claim_rewards(
@@ -132,11 +134,9 @@ pub struct PlaceBet<'info> {
     pub sports_betting: Account<'info, SportsBetting>,
 
     #[account(
-        init,
-        payer = payer,
+        mut,
         seeds = [b"pot", sports_betting.key().as_ref()],
-        bump,
-        space = 8,
+        bump = sports_betting.pot_bump
     )]
     pub pot_account: SystemAccount<'info>,
 
@@ -217,16 +217,16 @@ pub struct SportsBetting {
     pub bump: u8,
     pub pot_bump: u8,
 
-    #[max_len = 32]
+    #[max_len(32)]
     pub team_a_name: String,
 
-    #[max_len = 32]
+    #[max_len(32)]
     pub team_b_name: String,
 
-    #[max_len = 100]
+    #[max_len(100)]
     pub winners: Vec<Winners>,
 
-    #[max_len = 100]
+    #[max_len(100)]
     pub bettors: Vec<Bettor>,
 
     pub game_start: u64,
