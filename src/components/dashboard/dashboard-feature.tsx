@@ -1,4 +1,5 @@
 import { AppHero } from '@/components/app-hero'
+import Link from 'next/link';
 
 const links: { label: string; href: string }[] = [
   { label: 'Solana Docs', href: 'https://docs.solana.com/' },
@@ -10,25 +11,12 @@ const links: { label: string; href: string }[] = [
 
 export function DashboardFeature() {
   return (
-    <div>
-      <AppHero title="gm" subtitle="Say hi to your new Solana app." />
-      <div className="max-w-xl mx-auto py-6 sm:px-6 lg:px-8 text-center">
-        <div className="space-y-2">
-          <p>Here are some helpful links to get you started.</p>
-          {links.map((link, index) => (
-            <div key={index}>
-              <a
-                href={link.href}
-                className="hover:text-gray-500 dark:hover:text-gray-300"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {link.label}
-              </a>
-            </div>
-          ))}
-        </div>
-      </div>
+    <div className="flex flex-col items-center justify-center gap-6">
+      <AppHero title="The Betting Nest" subtitle="Made by Daniel Gao" />
+      <Link href="/bet" className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold rounded-lg shadow-md transition transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-300 disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none">
+        Get Started
+      </Link>
+
     </div>
   )
 }

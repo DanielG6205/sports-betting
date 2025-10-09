@@ -1,6 +1,6 @@
 'use client'
 
-import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import {
   Connection,
@@ -37,15 +37,12 @@ export function useGetTokenAccounts({ address }: { address: PublicKey }) {
   return useQuery({
     queryKey: ['get-token-accounts', { endpoint: connection.rpcEndpoint, address }],
     queryFn: async () => {
-      const [tokenAccounts, token2022Accounts] = await Promise.all([
+      const [tokenAccounts] = await Promise.all([
         connection.getParsedTokenAccountsByOwner(address, {
           programId: TOKEN_PROGRAM_ID,
-        }),
-        connection.getParsedTokenAccountsByOwner(address, {
-          programId: TOKEN_2022_PROGRAM_ID,
-        }),
+        })
       ])
-      return [...tokenAccounts.value, ...token2022Accounts.value]
+      return [...tokenAccounts.value]
     },
   })
 }
