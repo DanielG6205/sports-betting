@@ -2547,7 +2547,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "sports_betting"
+name = "sports_bet"
 version = "0.1.0"
 dependencies = [
  "anchor-lang",

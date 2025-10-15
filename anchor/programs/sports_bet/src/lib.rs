@@ -1,3 +1,4 @@
+// anchor/programs/sports_betting/src/lib.rs
 #![allow(clippy::result_large_err)]
 #![allow(unexpected_cfgs)]
 
@@ -8,7 +9,7 @@ use anchor_lang::system_program;
 declare_id!("Count3AcZucFDPSFBAeHkQ6AvttieKUkyJ8HiQGhQwe");
 
 #[program]
-pub mod sports_betting {
+pub mod sports_bet {
     use super::*;
 
     pub fn initialize_config(
@@ -18,17 +19,17 @@ pub mod sports_betting {
         start: u64,
         end: u64,
     ) -> Result<()> {
-        let sb = &mut ctx.accounts.sports_betting;
+        let sports_betting = &mut ctx.accounts.sports_betting;
     
-        sb.bump = ctx.bumps.sports_betting;
-        sb.pot_bump = ctx.bumps.pot_account;
-        sb.team_a_name = team_a;
-        sb.team_b_name = team_b;
-        sb.game_start = start;
-        sb.game_end = end;
-        sb.pot = 0;
-        sb.admin = ctx.accounts.payer.key();
-        sb.status = 0;
+        sports_betting.bump = ctx.bumps.sports_betting;
+        sports_betting.pot_bump = ctx.bumps.pot_account;
+        sports_betting.team_a_name = team_a;
+        sports_betting.team_b_name = team_b;
+        sports_betting.game_start = start;
+        sports_betting.game_end = end;
+        sports_betting.pot = 0;
+        sports_betting.admin = ctx.accounts.payer.key();
+        sports_betting.status = 0;
         Ok(())
     }
 
@@ -38,11 +39,11 @@ pub mod sports_betting {
         amount: u64,
         team: u8, // 0 = team A, 1 = team B
     ) -> Result<()> {
-        let sb = &mut ctx.accounts.sports_betting;
+        let sports_betting = &mut ctx.accounts.sports_betting;
 
-        require!(sb.status == 0, SportsError::BettingClosed);
+        require!(sports_betting.status == 0, SportsError::BettingClosed);
 
-        require!(Clock::get()?.unix_timestamp < sb.game_start as i64, SportsError::BettingClosed);
+        require!(Clock::get()?.unix_timestamp < sports_betting.game_start as i64, SportsError::BettingClosed);
 
         system_program::transfer(
             CpiContext::new(
@@ -55,9 +56,9 @@ pub mod sports_betting {
             amount,
         )?;
 
-        sb.pot = sb.pot.checked_add(amount).unwrap();
+        sports_betting.pot = sports_betting.pot.checked_add(amount).unwrap();
 
-        sb.bettors.push(Bettor {
+        sports_betting.bettors.push(Bettor {
             wallet: ctx.accounts.bettor.key(),
             amount,
             team,
@@ -70,14 +71,14 @@ pub mod sports_betting {
         ctx: Context<EndGame>, 
         winning_team: u8
     ) -> Result<()>{
-        let sb = &mut ctx.accounts.sports_betting;
+        let sports_betting = &mut ctx.accounts.sports_betting;
 
-        require_keys_eq!(ctx.accounts.admin.key(), sb.admin, SportsError::Unauthorized);
-        require!(sb.status == 0 || sb.status == 1, SportsError::GameSettled);
+        require_keys_eq!(ctx.accounts.admin.key(), sports_betting.admin, SportsError::Unauthorized);
+        require!(sports_betting.status == 0 || sports_betting.status == 1, SportsError::GameSettled);
         require!(winning_team <= 1, SportsError::InvalidTeam);
 
-        sb.status = 2;
-        sb.winning_team = Some(winning_team);
+        sports_betting.status = 2;
+        sports_betting.winning_team = Some(winning_team);
 
         Ok(())
     }
@@ -85,30 +86,30 @@ pub mod sports_betting {
     pub fn claim_rewards(
         ctx: Context<ClaimReward>
     ) -> Result<()>{
-        let sb = &mut ctx.accounts.sports_betting;
+        let config = &mut ctx.accounts.sports_betting;
 
-        require!(sb.status == 2, SportsError::GameNotEnded);
-        let winning_team = sb.winning_team.ok_or(SportsError::GameNotEnded)?;
+        require!(config.status == 2, SportsError::GameNotEnded);
+        let winning_team = config.winning_team.ok_or(SportsError::GameNotEnded)?;
 
-        let bettor_index = sb.bettors.iter().position(|b| b.wallet == ctx.accounts.bettor.key());
+        let bettor_index = config.bettors.iter().position(|b| b.wallet == ctx.accounts.bettor.key());
         require!(bettor_index.is_some(), SportsError::NothingToClaim);
 
-        let bettor = &sb.bettors[bettor_index.unwrap()];
+        let bettor = &config.bettors[bettor_index.unwrap()];
         require!(bettor.team == winning_team, SportsError::NothingToClaim);
 
-        let total_winner_amount: u64 = sb.bettors.iter().filter(|b| b.team == winning_team).map(|b| b.amount).sum();
+        let total_winner_amount: u64 = config.bettors.iter().filter(|b| b.team == winning_team).map(|b| b.amount).sum();
 
-        let payout = (sb.pot as u128).checked_mul(bettor.amount as u128).unwrap().checked_div(total_winner_amount as u128).unwrap() as u64;
+        let payout = (config.pot as u128).checked_mul(bettor.amount as u128).unwrap().checked_div(total_winner_amount as u128).unwrap() as u64;
 
         let pot_account_info = ctx.accounts.pot_account.to_account_info();
         let bettor_info = ctx.accounts.bettor.to_account_info();
         let system_program = ctx.accounts.system_program.to_account_info();
         
-        let sb_key = sb.key();
+        let sb_key = config.key();
         let seeds = &[
             b"pot",
             sb_key.as_ref(),
-            &[sb.pot_bump],
+            &[config.pot_bump],
         ];
         let signer_seeds = &[&seeds[..]];
 
@@ -265,5 +266,3 @@ pub enum SportsError {
     #[msg("Overflow error")]            
     Overflow,
 }
-
-

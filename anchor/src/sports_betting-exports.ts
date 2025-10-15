@@ -1,22 +1,23 @@
-import { AnchorProvider, Program, Idl, Address } from '@coral-xyz/anchor'
+import { AnchorProvider, Program } from '@coral-xyz/anchor'
 import { Cluster, PublicKey } from '@solana/web3.js'
-import SportsBettingIDL from '../target/idl/sports_betting.json'
-import type { SportsBetting } from '../target/types/sports_betting'
+import SportsBettingIDL from '../target/idl/sports_bet.json'
+import type { SportsBet } from '../target/types/sports_bet'
 
-export const SPORTS_BETTING_PROGRAM_ID = new PublicKey(SportsBettingIDL.address)
+export { SportsBettingIDL, SportsBet }
+
+export const SPORTS_BETTING_PROGRAM_ID = new PublicKey(
+  SportsBettingIDL.address // same as "Count3AcZucF…"
+)
 
 export function getSportsBettingProgram(
   provider: AnchorProvider,
   address?: PublicKey
-): Program<SportsBetting> {
-  const programId: PublicKey = address ?? SPORTS_BETTING_PROGRAM_ID
-  return new Program<SportsBetting>(
-    SportsBettingIDL as Idl,
-    programId as Address, // ✅ cast fixes the squiggly
+): Program<SportsBet> {
+  return new Program(
+    { ...SportsBettingIDL, address: (address ?? SPORTS_BETTING_PROGRAM_ID).toBase58() } as SportsBet,
     provider
   )
 }
-
 
 export function getSportsBettingProgramId(cluster: Cluster): PublicKey {
   switch (cluster) {
@@ -25,6 +26,7 @@ export function getSportsBettingProgramId(cluster: Cluster): PublicKey {
       return new PublicKey('Count3AcZucFDPSFBAeHkQ6AvttieKUkyJ8HiQGhQwe')
     case 'mainnet-beta':
     default:
+      // change this when you deploy to mainnet
       return SPORTS_BETTING_PROGRAM_ID
   }
 }

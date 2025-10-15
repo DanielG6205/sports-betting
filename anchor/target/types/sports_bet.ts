@@ -1,14 +1,20 @@
-{
+/**
+ * Program IDL in camelCase format in order to be used in JS/TS.
+ *
+ * Note that this is only a type helper and is not the actual IDL. The original
+ * IDL can be found at `target/idl/sports_bet.json`.
+ */
+export type SportsBet = {
   "address": "Count3AcZucFDPSFBAeHkQ6AvttieKUkyJ8HiQGhQwe",
   "metadata": {
-    "name": "sports_betting",
+    "name": "sportsBet",
     "version": "0.1.0",
     "spec": "0.1.0",
     "description": "Created with Anchor"
   },
   "instructions": [
     {
-      "name": "claim_rewards",
+      "name": "claimRewards",
       "discriminator": [
         4,
         144,
@@ -26,11 +32,11 @@
           "signer": true
         },
         {
-          "name": "sports_betting",
+          "name": "sportsBetting",
           "writable": true
         },
         {
-          "name": "pot_account",
+          "name": "potAccount",
           "writable": true,
           "pda": {
             "seeds": [
@@ -44,20 +50,20 @@
               },
               {
                 "kind": "account",
-                "path": "sports_betting"
+                "path": "sportsBetting"
               }
             ]
           }
         },
         {
-          "name": "system_program",
+          "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
     },
     {
-      "name": "end_game",
+      "name": "endGame",
       "discriminator": [
         224,
         135,
@@ -75,19 +81,19 @@
           "signer": true
         },
         {
-          "name": "sports_betting",
+          "name": "sportsBetting",
           "writable": true
         }
       ],
       "args": [
         {
-          "name": "winning_team",
+          "name": "winningTeam",
           "type": "u8"
         }
       ]
     },
     {
-      "name": "initialize_config",
+      "name": "initializeConfig",
       "discriminator": [
         208,
         127,
@@ -105,7 +111,7 @@
           "signer": true
         },
         {
-          "name": "sports_betting",
+          "name": "sportsBetting",
           "writable": true,
           "pda": {
             "seeds": [
@@ -132,7 +138,7 @@
           }
         },
         {
-          "name": "pot_account",
+          "name": "potAccount",
           "docs": [
             "It is initialized by this instruction and only accessed via program-derived addresses."
           ],
@@ -149,23 +155,23 @@
               },
               {
                 "kind": "account",
-                "path": "sports_betting"
+                "path": "sportsBetting"
               }
             ]
           }
         },
         {
-          "name": "system_program",
+          "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
         {
-          "name": "team_a",
+          "name": "teamA",
           "type": "string"
         },
         {
-          "name": "team_b",
+          "name": "teamB",
           "type": "string"
         },
         {
@@ -179,7 +185,7 @@
       ]
     },
     {
-      "name": "place_bet",
+      "name": "placeBet",
       "discriminator": [
         222,
         62,
@@ -197,11 +203,11 @@
           "signer": true
         },
         {
-          "name": "sports_betting",
+          "name": "sportsBetting",
           "writable": true
         },
         {
-          "name": "pot_account",
+          "name": "potAccount",
           "writable": true,
           "pda": {
             "seeds": [
@@ -215,13 +221,13 @@
               },
               {
                 "kind": "account",
-                "path": "sports_betting"
+                "path": "sportsBetting"
               }
             ]
           }
         },
         {
-          "name": "system_program",
+          "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -239,7 +245,7 @@
   ],
   "accounts": [
     {
-      "name": "SportsBetting",
+      "name": "sportsBetting",
       "discriminator": [
         165,
         5,
@@ -255,53 +261,53 @@
   "errors": [
     {
       "code": 6000,
-      "name": "BettingClosed",
+      "name": "bettingClosed",
       "msg": "Betting is closed"
     },
     {
       "code": 6001,
-      "name": "InvalidTeam",
+      "name": "invalidTeam",
       "msg": "Invalid team ID"
     },
     {
       "code": 6002,
-      "name": "MaxBettorsReached",
+      "name": "maxBettorsReached",
       "msg": "Max bettors reached"
     },
     {
       "code": 6003,
-      "name": "InsufficientPot",
+      "name": "insufficientPot",
       "msg": "Insufficient pot"
     },
     {
       "code": 6004,
-      "name": "GameSettled",
+      "name": "gameSettled",
       "msg": "Game already settled"
     },
     {
       "code": 6005,
-      "name": "NothingToClaim",
+      "name": "nothingToClaim",
       "msg": "You have nothing to claim"
     },
     {
       "code": 6006,
-      "name": "Unauthorized",
-      "msg": "Unauthorized"
+      "name": "unauthorized",
+      "msg": "unauthorized"
     },
     {
       "code": 6007,
-      "name": "GameNotEnded",
+      "name": "gameNotEnded",
       "msg": "Game has not ended yet"
     },
     {
       "code": 6008,
-      "name": "Overflow",
+      "name": "overflow",
       "msg": "Overflow error"
     }
   ],
   "types": [
     {
-      "name": "Bettor",
+      "name": "bettor",
       "type": {
         "kind": "struct",
         "fields": [
@@ -321,7 +327,7 @@
       }
     },
     {
-      "name": "SportsBetting",
+      "name": "sportsBetting",
       "type": {
         "kind": "struct",
         "fields": [
@@ -330,15 +336,15 @@
             "type": "u8"
           },
           {
-            "name": "pot_bump",
+            "name": "potBump",
             "type": "u8"
           },
           {
-            "name": "team_a_name",
+            "name": "teamAName",
             "type": "string"
           },
           {
-            "name": "team_b_name",
+            "name": "teamBName",
             "type": "string"
           },
           {
@@ -346,7 +352,7 @@
             "type": {
               "vec": {
                 "defined": {
-                  "name": "Winners"
+                  "name": "winners"
                 }
               }
             }
@@ -356,17 +362,17 @@
             "type": {
               "vec": {
                 "defined": {
-                  "name": "Bettor"
+                  "name": "bettor"
                 }
               }
             }
           },
           {
-            "name": "game_start",
+            "name": "gameStart",
             "type": "u64"
           },
           {
-            "name": "game_end",
+            "name": "gameEnd",
             "type": "u64"
           },
           {
@@ -374,7 +380,7 @@
             "type": "u8"
           },
           {
-            "name": "winning_team",
+            "name": "winningTeam",
             "type": {
               "option": "u8"
             }
@@ -391,7 +397,7 @@
       }
     },
     {
-      "name": "Winners",
+      "name": "winners",
       "type": {
         "kind": "struct",
         "fields": [
@@ -407,4 +413,4 @@
       }
     }
   ]
-}
+};
